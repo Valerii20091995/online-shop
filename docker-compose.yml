@@ -1,0 +1,28 @@
+services:
+  web:
+    image: nginx
+    volumes:
+      - ./src/docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
+    ports:
+      - "82:80"
+    restart: always
+    depends_on:
+      - php-fpm
+      - db
+
+  php-fpm:
+    build: ./src/docker/php
+    restart: always
+    volumes:
+      - .:/var/www/html
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+     - POSTGRES_DB=${POSTGRES_DB}
+     - POSTGRES_USER={POSTGRES_USER}
+     - POSTGRES_PASSWORD={POSTGRES_PASSWORD}
+    ports:
+      - "5434:5432"
